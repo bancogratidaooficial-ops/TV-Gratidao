@@ -2,118 +2,139 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TV GRATIDÃO V2</title>
+<title>TV GRATIDÃO V5 - Abertos com Gravador</title>
+<link rel="manifest" href="manifest.json">
 <style>
 body{background:#000;color:#fff;font-family:Arial;margin:0}
-.header{position:sticky;top:0;background:#111;border-bottom:2px solid #e50914;padding:8px;display:flex;gap:6px;flex-wrap:wrap;z-index:20}
-.btn-red{background:#e50914;color:#fff;border:0;padding:9px 12px;border-radius:12px;font-weight:bold}
+.header{position:sticky;top:0;background:#111;border-bottom:2px solid #FFD700;padding:8px;display:flex;gap:6px;flex-wrap:wrap;z-index:20;align-items:center}
+.btn-gold{background:#FFD700;color:#000;border:0;padding:10px 14px;border-radius:12px;font-weight:bold}
 .btn2{background:#222;color:#fff;border:1px solid #444;padding:8px 10px;border-radius:10px}
-.btn-green{background:#0a7d0a;color:#fff;border:0;padding:8px 12px;border-radius:10px;font-weight:bold}
-.tabs{display:flex;gap:6px;padding:10px;overflow:auto}
-.tab{background:#222;border:1px solid #333;padding:10px 12px;border-radius:20px;white-space:nowrap;color:#fff}
-.tab.active{background:#e50914;color:#fff;font-weight:bold}
-.card{background:#111;border:1px solid #333;border-radius:14px;padding:12px;margin:10px}
-.canal{display:flex;align-items:center;gap:10px;background:#151515;border:1px solid #333;border-radius:12px;padding:12px;margin:8px 10px}
-.logo{width:44px;height:44px;border-radius:10px;background:#000;display:flex;align-items:center;justify-content:center;font-size:24px;border:1px solid #333}
-.play{background:#e50914;color:#fff;border:0;padding:8px 12px;border-radius:10px;font-weight:bold}
-.install{background:#0a7d0a;color:#fff;border:0;padding:8px 12px;border-radius:10px;font-weight:bold}
+.btn-red{background:#e50914;color:#fff;border:0;padding:8px 10px;border-radius:10px}
+.canal{display:flex;align-items:center;gap:10px;background:#151515;border:1px solid #333;border-radius:14px;padding:10px;margin:8px 10px}
+.logo{width:46px;height:46px;border-radius:12px;background:#000;display:flex;align-items:center;justify-content:center;font-size:24px;border:1px solid #444}
+.play{background:#FFD700;color:#000;border:0;padding:8px 12px;border-radius:10px;font-weight:bold}
+.gravar{background:#333;color:#FFD700;border:1px solid #FFD700;padding:8px 10px;border-radius:10px;font-weight:bold}
+.live{color:#0f0;font-size:10px;font-weight:bold}
+.tabs{display:flex;gap:6px;padding:10px;overflow:auto;position:sticky;top:52px;background:#000;z-index:10}
+.tab{padding:10px 14px;border-radius:20px;border:1px solid #333;background:#222;color:#fff;white-space:nowrap}
+.tab.active{background:#FFD700;color:#000;font-weight:bold}
+.search{margin:10px;padding:10px;background:#111;border-radius:12px;border:1px solid #333}
+.search input{width:100%;padding:12px;border-radius:10px;background:#000;border:1px solid #333;color:#fff;box-sizing:border-box}
 #lockScreen{position:fixed;inset:0;background:#000;display:flex;align-items:center;justify-content:center;z-index:99}
-.pin-dot{width:14px;height:14px;border:2px solid #e50914;border-radius:50%;display:inline-block;margin:4px}.filled{background:#e50914}
-.aviso{background:#1a0505;border:1px dashed #e50914;color:#ff7777;padding:8px;border-radius:8px;font-size:11px;margin:8px 0;text-align:center}
+.pin-dot{width:14px;height:14px;border:2px solid #FFD700;border-radius:50%;display:inline-block;margin:4px}.filled{background:#FFD700}
+.aviso{background:#1a1600;border:1px dashed #FFD700;color:#FFD700;padding:8px;border-radius:8px;font-size:11px;margin:8px 0;text-align:center}
 </style>
 </head>
 <body>
 
-<div id="lockScreen"><div class="card" style="text-align:center;width:340px;max-width:95%">
-<h2 style="color:#e50914;margin:0">📺 TV GRATIDÃO V2</h2>
-<p id="pinMsg">Crie seu PIN de 4 dígitos!</p>
-<div id="avisoDecore" class="aviso">⚠️ <b>GERE SUA SENHA E DECORE!</b><br>Não esqueça, será necessária na próxima entrada!</div>
-<div><span id="d1" class="pin-dot"></span><span id="d2" class="pin-dot"></span><span id="d3" class="pin-dot"></span><span id="d4" class="pin-dot"></span></div>
-<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px">
-<button class="btn2" onclick="addPin('1')">1</button><button class="btn2" onclick="addPin('2')">2</button><button class="btn2" onclick="addPin('3')">3</button>
-<button class="btn2" onclick="addPin('4')">4</button><button class="btn2" onclick="addPin('5')">5</button><button class="btn2" onclick="addPin('6')">6</button>
-<button class="btn2" onclick="addPin('7')">7</button><button class="btn2" onclick="addPin('8')">8</button><button class="btn2" onclick="addPin('9')">9</button>
-<button class="btn2" onclick="clearPin()">⌫</button><button class="btn2" onclick="addPin('0')">0</button><button class="btn-red" onclick="okPin()">OK</button>
-</div>
-<button id="btnCriar" style="display:none;width:100%;margin-top:8px" class="btn-red" onclick="criarPin()">💾 CRIAR PIN</button>
-<div id="recupDiv" style="display:none;margin-top:8px">
-<input id="recEmail" placeholder="Seu e-mail ou celular para recuperar" style="width:100%;padding:10px;border-radius:10px;background:#000;border:1px solid #e50914;color:#fff;text-align:center">
-</div>
-<button style="width:100%;margin-top:10px" class="btn2" onclick="esqueci()">🔑 Esqueci minha senha</button>
-</div></div>
+<div id="lockScreen"><div style="background:#111;border:1px solid #333;border-radius:14px;padding:12px;text-align:center;width:360px;max-width:95%">
+<h2 style="color:#FFD700;margin:0">📺 TV GRATIDÃO V5</h2><p id="pinMsg">Crie seu PIN de 4 dígitos!</p><div id="avisoDecore" class="aviso">⚠️ <b>GERE SUA SENHA E DECORE!</b> Necessária na próxima entrada!</div><div><span id="d1" class="pin-dot"></span><span id="d2" class="pin-dot"></span><span id="d3" class="pin-dot"></span><span id="d4" class="pin-dot"></span></div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px"><button class="btn2" onclick="addPin('1')">1</button><button class="btn2" onclick="addPin('2')">2</button><button class="btn2" onclick="addPin('3')">3</button><button class="btn2" onclick="addPin('4')">4</button><button class="btn2" onclick="addPin('5')">5</button><button class="btn2" onclick="addPin('6')">6</button><button class="btn2" onclick="addPin('7')">7</button><button class="btn2" onclick="addPin('8')">8</button><button class="btn2" onclick="addPin('9')">9</button><button class="btn2" onclick="clearPin()">⌫</button><button class="btn2" onclick="addPin('0')">0</button><button class="btn-gold" onclick="okPin()">OK</button></div><button id="btnCriar" style="display:none;width:100%;margin-top:8px" class="btn-gold" onclick="criarPin()">💾 CRIAR PIN</button><div id="recupDiv" style="display:none;margin-top:8px"><input id="recEmail" placeholder="E-mail ou celular para recuperar" style="width:100%;padding:10px;border-radius:10px;background:#000;border:1px solid #FFD700;color:#fff;text-align:center"></div><button style="width:100%;margin-top:10px" class="btn2" onclick="esqueci()">🔑 Esqueci senha</button></div></div>
 
 <div id="app" style="display:none">
 <div class="header">
-<b style="color:#e50914;flex:1">📺 TV GRATIDÃO</b>
+<button class="btn2" onclick="voltar()">⬅️ Voltar</button>
+<b style="color:#FFD700;flex:1">📺 ABERTOS</b>
 <button class="btn2" onclick="bloquear()">🔒</button>
-<button class="btn2" onclick="compartilhar()">📤 Compartilhar</button>
-<button class="btn-green" onclick="convidar()">👥 Convidar</button>
-<button class="btn-red" onclick="instalarPWA()">📲 Instalar App</button>
+<button class="btn2" onclick="compartilhar()">📤</button>
+<button class="btn-gold" onclick="instalarPWA()">📲</button>
 </div>
+
 <div class="tabs">
-<button id="tabBtn-todos" class="tab active" onclick="filtrar('todos',this)">📺 Todos</button>
-<button class="tab" onclick="filtrar('aberta',this)">📡 Abertos</button>
-<button class="tab" onclick="filtrar('pago',this)">💎 Pagos</button>
-<button class="tab" onclick="filtrar('local',this)">📍 RIC TV</button>
+<button id="t-todos" class="tab active" onclick="setTab('todos',this)">📺 Todos</button>
+<button class="tab" onclick="setTab('favoritos',this)">⭐ Favoritos (<span id="favCount">0</span>)</button>
+<button class="tab" onclick="setTab('gravados',this)">🔴 Gravados (<span id="gravCount">0</span>)</button>
+<button class="tab" onclick="setTab('parana',this)">📍 Paraná</button>
 </div>
-<div class="card"><input id="busca" placeholder="🔍 Buscar canal..." style="width:100%;padding:10px;border-radius:10px;background:#000;border:1px solid #333;color:#fff" oninput="render()"></div>
+
+<div class="search"><input id="busca" placeholder="🔍 Buscar..." oninput="render()"></div>
 <div id="listaCanais"></div>
 </div>
 
 <script>
-let pin='',pinSalvo=localStorage.getItem('tv_pin_v2'),criando=false,filtro='todos',deferredPrompt=null;
+let pin='',pinSalvo=localStorage.getItem('tv_pin_v5'),criando=false,tab='todos',hist=[],deferredPrompt=null;
+let favoritos=JSON.parse(localStorage.getItem('tv_fav_v5')||'[]');
+let gravados=JSON.parse(localStorage.getItem('tv_grav_v5')||'[]');
 function upd(){for(let i=1;i<=4;i++)document.getElementById('d'+i).classList.toggle('filled',i<=pin.length)}
 function addPin(n){if(pin.length>=4)return;pin+=n;upd();if(pin.length===4)setTimeout(okPin,200)}
 function clearPin(){pin=pin.slice(0,-1);upd()}
-function okPin(){
- if(!pinSalvo && !criando){
-   if(pin.length<4)return; pinSalvo=pin; criando=true;
-   document.getElementById('pinMsg').innerText='Confirme seu PIN!'; document.getElementById('btnCriar').style.display='block'; document.getElementById('recupDiv').style.display='block';
-   document.getElementById('avisoDecore').innerHTML='✅ Confirme! <b>DECORE essa senha!</b>'; pin='';upd();return;
- }
- if(pin===pinSalvo){
-   if(criando){let rec=document.getElementById('recEmail').value.trim(); if(rec.length<5)return alert('Digite e-mail ou celular!'); localStorage.setItem('tv_rec_v2',rec);}
-   localStorage.setItem('tv_pin_v2',pinSalvo); document.getElementById('lockScreen').style.display='none'; document.getElementById('app').style.display='block';render();
- } else {document.getElementById('pinMsg').innerText='❌ PIN errado!'; pin='';upd();}
-}
-function criarPin(){if(pin!==pinSalvo)return alert('PIN diferente!'); let rec=document.getElementById('recEmail').value.trim(); if(rec.length<5)return alert('Coloca e-mail ou celular!'); localStorage.setItem('tv_pin_v2',pinSalvo); localStorage.setItem('tv_rec_v2',rec); document.getElementById('lockScreen').style.display='none'; document.getElementById('app').style.display='block';render();}
-function esqueci(){let recSalvo=localStorage.getItem('tv_rec_v2'); if(!recSalvo){let novo=prompt('Nenhuma recuperação! Cadastre e-mail/celular:'); if(novo&&novo.length>4){localStorage.setItem('tv_rec_v2',novo); alert('Cadastrado! Clique em Esqueci novamente.');} return;} let tentativa=prompt('🔑 Digite seu e-mail/celular:\nDica: '+recSalvo.substring(0,3)+'****'); if(tentativa&&tentativa.trim().toLowerCase()===recSalvo.toLowerCase()){if(confirm('✅ Confirmado! Criar novo PIN?')){localStorage.removeItem('tv_pin_v2');location.reload();}} else if(tentativa){alert('❌ Não confere! Só dono reseta.');}}
+function okPin(){if(!pinSalvo&&!criando){if(pin.length<4)return;pinSalvo=pin;criando=true;document.getElementById('pinMsg').innerText='Confirme seu PIN!';document.getElementById('btnCriar').style.display='block';document.getElementById('recupDiv').style.display='block';pin='';upd();return;}if(pin===pinSalvo){if(criando){let r=document.getElementById('recEmail').value.trim();if(r.length<5)return alert('Digite e-mail/celular!');localStorage.setItem('tv_rec_v5',r);}localStorage.setItem('tv_pin_v5',pinSalvo);document.getElementById('lockScreen').style.display='none';document.getElementById('app').style.display='block';render();}else{document.getElementById('pinMsg').innerText='❌ PIN errado!';pin='';upd();}}
+function criarPin(){if(pin!==pinSalvo)return alert('PIN diferente!');let r=document.getElementById('recEmail').value.trim();if(r.length<5)return alert('Coloca e-mail!');localStorage.setItem('tv_pin_v5',pinSalvo);localStorage.setItem('tv_rec_v5',r);document.getElementById('lockScreen').style.display='none';document.getElementById('app').style.display='block';render();}
+function esqueci(){let s=localStorage.getItem('tv_rec_v5');if(!s){let n=prompt('Cadastre e-mail/celular:');if(n&&n.length>4){localStorage.setItem('tv_rec_v5',n);alert('Cadastrado!')}return;}let t=prompt('Digite e-mail/celular: '+s.substring(0,3)+'****');if(t&&t.trim().toLowerCase()===s.toLowerCase()){if(confirm('Novo PIN?')){localStorage.removeItem('tv_pin_v5');location.reload();}}else if(t){alert('Não confere!');}}
 function bloquear(){location.reload()}
+function voltar(){if(hist.length>1){hist.pop();let prev=hist.pop();setTab(prev,false);render();}else{window.history.back();}}
+function setTab(n,el){hist.push(tab);tab=n;document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));if(el)el.classList.add('active');render();}
 
 let canais=[
-{nome:'Globo',cat:'aberta',site:'https://redeglobo.globo.com/',play:'https://play.google.com/store/apps/details?id=com.globo.globotv',icon:'🌐',cor:'#ff6600'},
-{nome:'SBT',cat:'aberta',site:'https://www.sbt.com.br/ao-vivo',play:'https://play.google.com/store/apps/details?id=br.com.sbt.system',icon:'📺',cor:'#00a8ff'},
-{nome:'Record',cat:'aberta',site:'https://www.recordtv.r7.com/',play:'https://play.google.com/store/apps/details?id=com.r7.truckpad',icon:'📡',cor:'#003366'},
-{nome:'Band',cat:'aberta',site:'https://www.band.uol.com.br/ao-vivo/',play:'https://play.google.com/store/apps/details?id=br.com.band',icon:'📺',cor:'#000'},
-{nome:'RIC TV (Record PR)',cat:'local',site:'https://ric.com.br/ao-vivo/',play:'https://play.google.com/store/apps/details?id=br.com.ric.record',icon:'📍',cor:'#cc0000'},
-{nome:'MTV Brasil',cat:'aberta',site:'https://www.mtv.com.br/',play:'https://play.google.com/store/apps/details?id=com.mtv.mtvbrasil',icon:'🎵',cor:'#ff0099'},
-{nome:'Premiere',cat:'pago',site:'https://premiere.globo.com/',play:'https://play.google.com/store/apps/details?id=com.globo.globotv',icon:'⚽',cor:'#00aa00',vip:true},
-{nome:'Telecine',cat:'pago',site:'https://www.telecine.com.br/',play:'https://play.google.com/store/apps/details?id=br.com.telecine',icon:'🎬',cor:'#9900cc',vip:true},
-{nome:'Globoplay',cat:'pago',site:'https://globoplay.globo.com/',play:'https://play.google.com/store/apps/details?id=com.globo.globotv',icon:'▶️',cor:'#ff0000',vip:true}
+{nome:'Globo - Ao Vivo',cat:'nacional',site:'https://globoplay.globo.com/ao-vivo/assista-rede-globo/2y1vB9Jm8P/',icon:'🌐'},
+{nome:'SBT - Ao Vivo',cat:'nacional',site:'https://www.sbt.com.br/ao-vivo',icon:'📺'},
+{nome:'Record - Ao Vivo',cat:'nacional',site:'https://www.recordtv.r7.com/ao-vivo',icon:'📡'},
+{nome:'Band - Ao Vivo',cat:'nacional',site:'https://www.band.com.br/ao-vivo',icon:'📺'},
+{nome:'RedeTV! - Ao Vivo',cat:'nacional',site:'https://www.redetv.uol.com.br/aovivo',icon:'📺'},
+{nome:'TV Cultura',cat:'nacional',site:'https://cultura.uol.com.br/aovivo/',icon:'🎓'},
+{nome:'TV Brasil',cat:'nacional',site:'https://tvbrasil.ebc.com.br/ao-vivo',icon:'🇧🇷'},
+{nome:'RIC TV Curitiba',cat:'parana',site:'https://ric.com.br/ao-vivo/',icon:'📍'},
+{nome:'RPC - Globo Paraná',cat:'parana',site:'https://redeglobo.globo.com/rpc/',icon:'🌐'},
+{nome:'Massa - SBT Paraná',cat:'parana',site:'https://www.sbt.com.br/afiliadas/redemassa',icon:'📺'},
+{nome:'Band Paraná',cat:'parana',site:'https://www.band.com.br/band-parana',icon:'📺'},
+{nome:'CNT - Paraná',cat:'parana',site:'https://www.cnt.com.br/ao-vivo/',icon:'📡'},
+{nome:'TV Evangelizar',cat:'parana',site:'https://www.evangelizar.com.br/ao-vivo/',icon:'🙏'}
 ];
 
-function render(){
- let b=document.getElementById('busca')?.value.toLowerCase()||'';
- let lista=document.getElementById('listaCanais');
- let f=canais.filter(x=>(filtro==='todos'||x.cat===filtro)&&x.nome.toLowerCase().includes(b));
- lista.innerHTML=f.map(x=>`
-  <div class="canal" style="border-left:4px solid ${x.cor}">
-    <div class="logo">${x.icon}</div>
-    <div style="flex:1"><b>${x.nome} ${x.vip?'💎':''}</b><br><small style="color:#888">${x.cat.toUpperCase()} ${x.vip?' - Requer assinatura':''}</small>
-      <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">
-        <button class="play" onclick="window.open('${x.site}','_blank')">▶️ ASSISTIR</button>
-        <button class="install" onclick="window.location.href='${x.play}'">📲 INSTALAR APP</button>
-      </div>
-    </div>
-  </div>`).join('');
+function isFav(n){return favoritos.includes(n)}
+function toggleFav(n){if(isFav(n)){favoritos=favoritos.filter(x=>x!==n)}else{favoritos.push(n)}localStorage.setItem('tv_fav_v5',JSON.stringify(favoritos));render()}
+
+function gravarPrograma(nome,site){
+ let prog=prompt(`🔴 GRAVAR PROGRAMAÇÃO\nCanal: ${nome}\n\nDigite o nome do programa que quer gravar:\nEx: Jornal Nacional, Chaves, Novela`,'');
+ if(!prog)return;
+ let obs=prompt('Horário que passou? Ex: Hoje 20:30','Hoje '+new Date().toLocaleTimeString());
+ let item={id:Date.now(),canal:nome,programa:prog,horario:obs,site:site,data:new Date().toLocaleString('pt-BR')};
+ gravados.unshift(item);
+ localStorage.setItem('tv_grav_v5',JSON.stringify(gravados));
+ alert(`✅ Gravado!\n📺 ${nome}\n🎬 ${prog}\n🕐 ${obs}\n\nFica salvo em 🔴 Gravados pra assistir depois no site oficial!`);
+ render();
 }
-function filtrar(cat,el){filtro=cat; document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active')); el.classList.add('active'); render();}
-function compartilhar(){let url=window.location.href; if(navigator.share){navigator.share({title:'TV Gratidão',text:'📺 TV Gratidão - Globo, SBT, Record, Band, RIC, MTV, Premiere, Telecine',url})}else{navigator.clipboard.writeText(url);alert('Link copiado! 📤')}}
-function convidar(){let m=`📺 TV GRATIDÃO V2 - Todos Canais!\n🌐 Globo, SBT, Record, Band\n📍 RIC TV, 🎵 MTV\n⚽ Premiere, 🎬 Telecine, ▶️ Globoplay\n👉 ${window.location.href}`; if(navigator.share){navigator.share({title:'TV Gratidão',text:m})}else{navigator.clipboard.writeText(m);alert('Convite copiado! 👥')}}
-window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;});
-function instalarPWA(){if(deferredPrompt){deferredPrompt.prompt()}else{alert('No Chrome: ⋮ > Adicionar à tela inicial > Instalar')}}
-if(pinSalvo){document.getElementById('pinMsg').innerText='Digite seu PIN secreto'; document.getElementById('avisoDecore').style.display='none';}
+function assistirGravado(id){let g=gravados.find(x=>x.id===id);if(g)window.open(g.site,'_blank')}
+function apagarGravado(id){if(!confirm('Apagar essa gravação?'))return;gravados=gravados.filter(x=>x.id!==id);localStorage.setItem('tv_grav_v5',JSON.stringify(gravados));render()}
+
+function render(){
+ let busca=document.getElementById('busca').value.toLowerCase();
+ let lista=document.getElementById('listaCanais');
+ document.getElementById('favCount').innerText=favoritos.length;
+ document.getElementById('gravCount').innerText=gravados.length;
+
+ if(tab==='gravados'){
+   if(gravados.length===0){lista.innerHTML='<div class="canal" style="justify-content:center;color:#888">Nenhuma gravação ainda.<br>Clique em 🔴 GRAVAR em qualquer canal</div>';return;}
+   lista.innerHTML=gravados.map(g=>`
+    <div class="canal" style="border-left:4px solid #e50914">
+      <div class="logo">🔴</div>
+      <div style="flex:1"><b>${g.programa}</b><br><small style="color:#aaa">${g.canal} - ${g.horario}</small><br><small style="color:#666">Gravado em ${g.data}</small></div>
+      <button class="play" onclick="assistirGravado(${g.id})">▶️ VER</button>
+      <button class="btn-red" onclick="apagarGravado(${g.id})">🗑️</button>
+    </div>`).join('');return;
+ }
+
+ let f=canais.filter(c=>{
+   if(tab==='favoritos'&&!isFav(c.nome))return false;
+   if(tab==='parana'&&c.cat!=='parana')return false;
+   return c.nome.toLowerCase().includes(busca);
+ });
+
+ lista.innerHTML=f.map(c=>`
+  <div class="canal">
+    <div class="logo">${c.icon}</div>
+    <div style="flex:1"><b>${c.nome} <span class="live">● AO VIVO</span></b><br><small style="color:#888">${c.cat.toUpperCase()}</small></div>
+    <button class="btn2" onclick="toggleFav('${c.nome}')">${isFav(c.nome)?'⭐':'☆'}</button>
+    <button class="play" onclick="window.open('${c.site}','_blank')">▶️ VER</button>
+    <button class="gravar" onclick="gravarPrograma('${c.nome}','${c.site}')">🔴 GRAVAR</button>
+  </div>`).join('') || '<div style="text-align:center;padding:20px;color:#888">Nenhum canal</div>';
+}
+
+function compartilhar(){let url=location.href;if(navigator.share){navigator.share({title:'TV Gratidão V5',url})}else{navigator.clipboard.writeText(url);alert('Link copiado!')}}
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e});
+function instalarPWA(){if(deferredPrompt){deferredPrompt.prompt()}else{alert('No Chrome: ⋮ > Instalar app')}}
+if(pinSalvo){document.getElementById('pinMsg').innerText='Digite seu PIN secreto';document.getElementById('avisoDecore').style.display='none';}
 render();
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js')}
 </script>
 </body>
 </html>
