@@ -2,10 +2,10 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TV GRATIDÃO V7 - Sem Bloqueio</title>
+<title>TV GRATIDÃO V8 - Sem Bloqueio Real</title>
 <link rel="manifest" href="manifest.json">
 <style>
-body{background:#000;color:#fff;font-family:Arial;margin:0;padding-bottom:80px}
+body{background:#000;color:#fff;font-family:Arial;margin:0;padding-bottom:20px}
 .header{position:sticky;top:0;background:#111;border-bottom:3px solid #FFD700;padding:8px;display:flex;gap:6px;align-items:center;z-index:50}
 .btn-gold{background:#FFD700;color:#000;border:0;padding:10px 12px;border-radius:10px;font-weight:bold}
 .btn2{background:#222;color:#fff;border:1px solid #444;padding:9px 10px;border-radius:10px}
@@ -23,23 +23,23 @@ body{background:#000;color:#fff;font-family:Arial;margin:0;padding-bottom:80px}
 .trash{background:#2a0a0a;border:1px solid #600;color:#ff5555;padding:9px 10px;border-radius:10px}
 .search{margin:10px;padding:8px;background:#111;border-radius:12px;border:1px solid #333}
 .search input{width:100%;padding:12px;border-radius:10px;background:#000;border:1px solid #333;color:#fff;box-sizing:border-box}
-.playerBox{display:none;background:#0a0a0a;border-bottom:2px solid #FFD700;position:sticky;top:98px;z-index:30;padding:8px}
 .storeCard{background:#111;border:1px solid #333;border-radius:12px;padding:12px;margin:10px}
+.live{color:#0f0;font-size:10px;font-weight:bold;animation:pisca 1s infinite}@keyframes pisca{50%{opacity:0}}
 </style>
 </head>
 <body>
 
 <div id="app">
 <div class="header">
-<button class="btn-icon" onclick="voltar()" title="Voltar">⬅️</button>
-<b style="color:#FFD700;flex:1;font-size:14px">📺 TV GRATIDÃO V7 LIVRE</b>
-<button class="btn2" onclick="compartilhar()">📤 Compartilhar</button>
+<button class="btn-icon" onclick="voltar()">⬅️</button>
+<b style="color:#FFD700;flex:1;font-size:14px">📺 TV GRATIDÃO V8</b>
+<button class="btn2" onclick="compartilhar()">📤</button>
 <button class="btn-gold" onclick="instalarPWA()">📲 Instalar</button>
 </div>
 
 <div class="tabs">
-<button class="tab active" onclick="setTab('todos',this)">📺 Todos Abertos</button>
-<button class="tab" onclick="setTab('youtube',this)">▶️ YouTube Dentro</button>
+<button class="tab active" onclick="setTab('todos',this)">📺 Todos</button>
+<button class="tab" onclick="setTab('youtube',this)">▶️ YouTube (Nunca Bloqueia)</button>
 <button class="tab" onclick="setTab('favoritos',this)">⭐ Favoritos (<span id="favCount">0</span>)</button>
 <button class="tab" onclick="setTab('gravados',this)">🔴 Gravados (<span id="gravCount">0</span>)</button>
 <button class="tab" onclick="setTab('storage',this)">💾 Armazenamento</button>
@@ -47,56 +47,46 @@ body{background:#000;color:#fff;font-family:Arial;margin:0;padding-bottom:80px}
 
 <div class="search"><input id="busca" placeholder="🔍 Buscar canal..." oninput="render()"></div>
 
-<div id="playerBox" class="playerBox">
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-<b id="playerNome" style="color:#FFD700">▶️ Assistindo</b>
-<button class="btn2" onclick="fecharPlayer()">❌ Fechar player</button>
-</div>
-<div id="playerArea" style="aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden"></div>
-</div>
-
 <div id="listaCanais"></div>
-<div style="text-align:center;padding:15px;color:#555;font-size:10px">V7 Sem Bloqueio - Todos os canais abertos via YouTube oficial e site oficial - Sem PIN</div>
+<div style="text-align:center;padding:15px;color:#555;font-size:10px">V8 - Links /live oficiais - nunca expiram</div>
 </div>
 
 <script>
 let tab='todos',histTab=[],deferredPrompt=null;
-let favoritos=JSON.parse(localStorage.getItem('tv_fav_v7')||'[]');
-let gravados=JSON.parse(localStorage.getItem('tv_grav_v7')||'[]');
+let favoritos=JSON.parse(localStorage.getItem('tv_fav_v8')||'[]');
+let gravados=JSON.parse(localStorage.getItem('tv_grav_v8')||'[]');
 
-function voltar(){if(document.getElementById('playerBox').style.display==='block'){fecharPlayer();return;}if(histTab.length>0){tab=histTab.pop();document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));render();}else{window.history.back();}}
-function setTab(n,el){if(tab!==n)histTab.push(tab);tab=n;document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));if(el)el.classList.add('active');else{document.querySelectorAll('.tab').forEach(b=>{if(b.textContent.toLowerCase().includes(n))b.classList.add('active')});}render();}
+function voltar(){if(histTab.length>0){tab=histTab.pop();document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));render();}else{window.history.back();}}
+function setTab(n,el){if(tab!==n)histTab.push(tab);tab=n;document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));if(el)el.classList.add('active');render();}
 
-// LISTA SEM BLOQUEIO - TUDO YOUTUBE OFICIAL (toca DENTRO do app)
+// V8 - NUNCA MAIS VÍDEO INDISPONÍVEL - usa /live do canal oficial
 let canais=[
-{nome:'SBT Ao Vivo',tipo:'youtube',youtube:'bLq5W2D1a2o',icon:'📺',desc:'SBT no YouTube - funciona dentro do app',yt:'SBT'},
-{nome:'Record News 24h',tipo:'youtube',youtube:'9Auq9mYxFEE',icon:'📡',desc:'Record News oficial - ao vivo',yt:'Record News'},
-{nome:'Band News Ao Vivo',tipo:'youtube',youtube:'yL4Y4Wn8eC0',icon:'📺',desc:'Band Jornalismo ao vivo',yt:'Band'},
-{nome:'Jovem Pan News',tipo:'youtube',youtube:'-V6R8h3o4cQ',icon:'📰',desc:'Jovem Pan 24h - sem bloqueio',yt:'Jovem Pan'},
-{nome:'CNN Brasil Ao Vivo',tipo:'youtube',youtube:'xA2kK4c5L9E',icon:'📰',desc:'CNN Brasil no YouTube',yt:'CNN'},
-{nome:'TV Cultura',tipo:'site',site:'https://cultura.uol.com.br/aovivo/',icon:'🎓',desc:'Site oficial - Cultura'},
-{nome:'RedeTV! Ao Vivo',tipo:'site',site:'https://www.redetv.uol.com.br/aovivo',icon:'📺',desc:'Site oficial - RedeTV'},
-{nome:'TV Brasil EBC',tipo:'site',site:'https://tvbrasil.ebc.com.br/ao-vivo',icon:'🇧🇷',desc:'TV Brasil oficial'},
-{nome:'RIC TV Curitiba',tipo:'site',site:'https://ric.com.br/ao-vivo/',icon:'📍',desc:'RIC Record Paraná'},
-{nome:'TV Evangelizar',tipo:'site',site:'https://www.evangelizar.com.br/ao-vivo/',icon:'🙏',desc:'Padre Manzotti - Curitiba'},
-{nome:'Globo - Globoplay',tipo:'site',site:'https://globoplay.globo.com/',icon:'🌐',desc:'Globoplay oficial - login grátis'},
-{nome:'Pluto TV - 100 canais grátis',tipo:'site',site:'https://pluto.tv/live-tv',icon:'🎬',desc:'100 canais grátis - filmes e TV'},
-{nome:'YouTube Ao Vivo Livre',tipo:'youtube',youtube:'jNQXAC9IVRw',icon:'▶️',desc:'Teste YouTube - primeiro vídeo',yt:'YouTube'}
+{nome:'SBT News Ao Vivo 24h',tipo:'youtube',canal:'https://www.youtube.com/@sbtnews/live',icon:'📺',desc:'Oficial SBT News - /live nunca expira',cat:'youtube'},
+{nome:'Record News Ao Vivo 24h',tipo:'youtube',canal:'https://www.youtube.com/@recordnews/live',icon:'📡',desc:'Oficial Record News - 24h',cat:'youtube'},
+{nome:'Band Jornalismo Ao Vivo',tipo:'youtube',canal:'https://www.youtube.com/@BandJornalismo/live',icon:'📺',desc:'Band oficial - ao vivo',cat:'youtube'},
+{nome:'Jovem Pan News Ao Vivo',tipo:'youtube',canal:'https://www.youtube.com/@JovemPanNews/live',icon:'📰',desc:'Jovem Pan - ao vivo 24h',cat:'youtube'},
+{nome:'CNN Brasil Ao Vivo',tipo:'youtube',canal:'https://www.youtube.com/@cnnbrasil/live',icon:'📰',desc:'CNN Brasil oficial',cat:'youtube'},
+{nome:'TV Cultura',tipo:'site',canal:'https://cultura.uol.com.br/aovivo/',icon:'🎓',desc:'Site oficial Cultura',cat:'aberto'},
+{nome:'RedeTV! Ao Vivo',tipo:'site',canal:'https://www.redetv.uol.com.br/aovivo',icon:'📺',desc:'Site oficial RedeTV',cat:'aberto'},
+{nome:'TV Brasil',tipo:'site',canal:'https://tvbrasil.ebc.com.br/ao-vivo',icon:'🇧🇷',desc:'TV Brasil EBC oficial',cat:'aberto'},
+{nome:'RIC TV Curitiba - Record PR',tipo:'site',canal:'https://ric.com.br/ao-vivo/',icon:'📍',desc:'RIC TV - Curitiba ao vivo',cat:'aberto'},
+{nome:'SBT - Site Oficial',tipo:'site',canal:'https://www.sbt.com.br/ao-vivo',icon:'📺',desc:'SBT.com.br - oficial',cat:'aberto'},
+{nome:'Globo - Globoplay',tipo:'site',canal:'https://globoplay.globo.com/',icon:'🌐',desc:'Globoplay - grátis 1h com login',cat:'aberto'},
+{nome:'TV Evangelizar Curitiba',tipo:'site',canal:'https://www.evangelizar.com.br/ao-vivo/',icon:'🙏',desc:'Padre Manzotti',cat:'aberto'},
+{nome:'Pluto TV - 100 canais grátis',tipo:'site',canal:'https://pluto.tv/live-tv',icon:'🎬',desc:'100 canais grátis sem cadastro',cat:'aberto'}
 ];
 
 function isFav(n){return favoritos.includes(n)}
-function toggleFav(n){if(isFav(n)){favoritos=favoritos.filter(x=>x!==n)}else{favoritos.push(n)}localStorage.setItem('tv_fav_v7',JSON.stringify(favoritos));render()}
-function playYoutube(id,nome){document.getElementById('playerBox').style.display='block';document.getElementById('playerNome').innerText='▶️ '+nome;document.getElementById('playerArea').innerHTML=`<iframe width="100%" height="100%" src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;window.scrollTo({top:0,behavior:'smooth'})}
-function playSite(site){window.open(site,'_blank')}
-function fecharPlayer(){document.getElementById('playerBox').style.display='none';document.getElementById('playerArea').innerHTML='';}
+function toggleFav(n){if(isFav(n)){favoritos=favoritos.filter(x=>x!==n)}else{favoritos.push(n)}localStorage.setItem('tv_fav_v8',JSON.stringify(favoritos));render()}
+function playCanal(url){window.open(url,'_blank')}
 function gravarPrograma(nome,site){
- let prog=prompt(`🔴 GRAVAR PROGRAMA\nCanal: ${nome}\n\nNome do programa que quer salvar:`,'');
+ let prog=prompt(`🔴 GRAVAR\nCanal: ${nome}\n\nNome do programa:`,'');
  if(!prog)return;
  let item={id:Date.now(),canal:nome,programa:prog,site:site,data:new Date().toLocaleString('pt-BR')};
- gravados.unshift(item);localStorage.setItem('tv_grav_v7',JSON.stringify(gravados));alert(`✅ SALVO!\n${prog}\nVai ficar em 🔴 Gravados`);render();
+ gravados.unshift(item);localStorage.setItem('tv_grav_v8',JSON.stringify(gravados));alert(`✅ Salvo em Gravados!\n${prog}`);render();
 }
-function apagarGravado(id){if(!confirm('Apagar essa gravação? 🗑️'))return;gravados=gravados.filter(x=>x.id!==id);localStorage.setItem('tv_grav_v7',JSON.stringify(gravados));render()}
-function limparTudo(){if(!confirm('⚠️ Apagar TUDO? Favoritos e gravações?'))return;localStorage.removeItem('tv_fav_v7');localStorage.removeItem('tv_grav_v7');favoritos=[];gravados=[];render();}
+function apagarGravado(id){if(!confirm('Apagar? 🗑️'))return;gravados=gravados.filter(x=>x.id!==id);localStorage.setItem('tv_grav_v8',JSON.stringify(gravados));render()}
+function limparTudo(){if(!confirm('Apagar TUDO?'))return;localStorage.removeItem('tv_fav_v8');localStorage.removeItem('tv_grav_v8');favoritos=[];gravados=[];render();}
 
 function render(){
  let busca=document.getElementById('busca').value.toLowerCase();
@@ -106,37 +96,17 @@ function render(){
 
  if(tab==='storage'){
    let uso=(JSON.stringify(localStorage).length/1024).toFixed(2);
-   lista.innerHTML=`
-    <div class="storeCard">
-      <h3 style="color:#FFD700;margin:0">💾 ARMAZENAMENTO</h3>
-      <p>⭐ Favoritos salvos: ${favoritos.length}</p>
-      <p>🔴 Programas gravados: ${gravados.length}</p>
-      <p>📦 Espaço usado: ${uso} KB</p>
-      <p style="color:#0f0;font-size:12px">✅ Tudo salvo na memória do seu celular! Mesmo fechando o app não apaga.</p>
-      <div style="display:flex;gap:8px;margin-top:12px">
-        <button class="btn2" style="flex:1" onclick="render()">🔄 Atualizar</button>
-        <button class="btn2" style="flex:1;background:#400;color:#fff;border-color:#800" onclick="limparTudo()">🗑️ LIMPAR TUDO</button>
-      </div>
-    </div>
-    ${favoritos.length>0?`<div class="storeCard"><b>⭐ Seus Favoritos:</b><br><small>${favoritos.join(', ')}</small></div>`:''}
-   `;return;
+   lista.innerHTML=`<div class="storeCard"><h3 style="color:#FFD700;margin:0">💾 ARMAZENAMENTO V8</h3><p>⭐ Favoritos: ${favoritos.length}</p><p>🔴 Gravados: ${gravados.length}</p><p>📦 Uso: ${uso} KB</p><p style="color:#0f0;font-size:12px">✅ Salvo na memória do celular!</p><div style="display:flex;gap:8px;margin-top:12px"><button class="btn2" style="flex:1" onclick="render()">🔄 Atualizar</button><button class="btn2" style="flex:1;background:#400;border-color:#800" onclick="limparTudo()">🗑️ LIMPAR TUDO - Lixeira Geral</button></div></div>`;return;
  }
-
  if(tab==='gravados'){
-   if(gravados.length===0){lista.innerHTML='<div class="storeCard" style="text-align:center;color:#888">Nenhuma gravação ainda.<br><br>Clique em <b>🔴 GRAVAR</b> em qualquer canal<br>pra salvar pra assistir depois</div>';return;}
-   lista.innerHTML=gravados.map(g=>`
-    <div class="canal" style="border-left:4px solid #e50914">
-      <div class="linha1"><div class="logo">🔴</div><div style="flex:1"><b>${g.programa}</b><br><small style="color:#aaa">${g.canal}</small><br><small style="color:#666">${g.data}</small></div></div>
-      <div class="botoes">
-        <button class="play" onclick="playSite('${g.site}')">▶️ ASSISTIR DEPOIS</button>
-        <button class="trash" onclick="apagarGravado(${g.id})">🗑️ Lixeira</button>
-      </div>
-    </div>`).join('');return;
+   if(gravados.length===0){lista.innerHTML='<div class="storeCard" style="text-align:center;color:#888">Nenhuma gravação<br>Clique em 🔴 GRAVAR</div>';return;}
+   lista.innerHTML=gravados.map(g=>`<div class="canal" style="border-left:4px solid #e50914"><div class="linha1"><div class="logo">🔴</div><div style="flex:1"><b>${g.programa}</b><br><small>${g.canal} - ${g.data}</small></div></div><div class="botoes"><button class="play" onclick="playCanal('${g.site}')">▶️ ASSISTIR DEPOIS</button><button class="trash" onclick="apagarGravado(${g.id})">🗑️ Lixeira</button></div></div>`).join('');return;
  }
 
  let f=canais.filter(c=>{
    if(tab==='favoritos'&&!isFav(c.nome))return false;
-   if(tab==='youtube'&&c.tipo!=='youtube')return false;
+   if(tab==='youtube'&&c.cat!=='youtube')return false;
+   if(tab==='todos'&&c.cat!=='aberto'&&c.cat!=='youtube')return false;
    return c.nome.toLowerCase().includes(busca)||c.desc.toLowerCase().includes(busca);
  });
 
@@ -144,19 +114,19 @@ function render(){
   <div class="canal">
     <div class="linha1">
       <div class="logo">${c.icon}</div>
-      <div style="flex:1"><b>${c.nome}</b><br><small style="color:#aaa">${c.desc}</small></div>
-      <button class="fav" onclick="toggleFav('${c.nome}')" title="Salvar na memória">${isFav(c.nome)?'⭐':'☆'}</button>
+      <div style="flex:1"><b>${c.nome} <span class="live">● AO VIVO</span></b><br><small style="color:#aaa">${c.desc}</small></div>
+      <button class="fav" onclick="toggleFav('${c.nome}')">${isFav(c.nome)?'⭐':'☆'}</button>
     </div>
     <div class="botoes">
-      ${c.tipo==='youtube'?`<button class="play" onclick="playYoutube('${c.youtube}','${c.nome}')">▶️ ASSISTIR AQUI DENTRO</button>`:`<button class="play" onclick="playSite('${c.site}')">▶️ VER NO SITE OFICIAL</button>`}
-      <button class="gravar" onclick="gravarPrograma('${c.nome}','${c.site||'https://youtube.com/watch?v='+c.youtube}')">🔴 GRAVAR</button>
+      <button class="play" onclick="playCanal('${c.canal}')">▶️ ASSISTIR - NUNCA BLOQUEIA</button>
+      <button class="gravar" onclick="gravarPrograma('${c.nome}','${c.canal}')">🔴 GRAVAR</button>
     </div>
   </div>`).join('');
 }
 
-function compartilhar(){let url=location.href;if(navigator.share){navigator.share({title:'TV Gratidão V7',text:'TV Gratidão V7 sem bloqueio',url})}else{navigator.clipboard.writeText(url);alert('Link copiado!')}}
+function compartilhar(){let url=location.href;if(navigator.share){navigator.share({title:'TV Gratidão V8',url})}else{navigator.clipboard.writeText(url);alert('Copiado!')}}
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e});
-function instalarPWA(){if(deferredPrompt){deferredPrompt.prompt()}else{alert('No Chrome: ⋮ > Adicionar à tela inicial > Instalar')}}
+function instalarPWA(){if(deferredPrompt){deferredPrompt.prompt()}else{alert('⋮ > Instalar app')}}
 render();
 if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js')}
 </script>
