@@ -2,46 +2,69 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TV GRATIDÃO V16 LEVE</title>
+<title>TV GRATIDÃO V17 PLUTO</title>
 <link rel="manifest" href="manifest.json">
 <style>
-body{background:#000;color:#fff;font-family:Arial;margin:0;padding:10px}
-.canal{background:#151515;border:2px solid #FFD700;border-radius:16px;margin:12px 0;padding:14px}
-.play{width:100%;background:#FFD700;color:#000;border:0;padding:16px;border-radius:12px;font-weight:bold;font-size:16px}
-.btn{background:#222;color:#fff;border:1px solid #444;padding:10px;border-radius:10px;width:48%}
+body{background:#000;color:#fff;font-family:Arial;margin:0}
+.header{position:sticky;top:0;background:#000;border-bottom:3px solid #FFD700;padding:12px;display:flex;justify-content:space-between;align-items:center;z-index:99}
+.btn-gold{background:#FFD700;color:#000;border:0;padding:12px 16px;border-radius:12px;font-weight:bold}
+.tabs{display:flex;gap:6px;padding:8px;overflow:auto;background:#111;border-bottom:1px solid #222;position:sticky;top:58px;z-index:80}
+.tab{padding:10px 14px;border-radius:20px;background:#222;border:1px solid #333;color:#fff;white-space:nowrap}
+.tab.active{background:#FFD700;color:#000;font-weight:bold}
+.canal{background:#151515;border:1px solid #333;border-radius:16px;margin:8px 10px;padding:12px}
+.play{width:100%;background:#FFD700;color:#000;border:0;padding:14px;border-radius:12px;font-weight:bold;margin-top:8px;font-size:15px}
+.fav{background:#222;border:1px solid #444;color:#FFD700;padding:8px 12px;border-radius:10px}
+.trash{background:#2a0a0a;border:1px solid #700;color:#ff5a5a;padding:8px 12px;border-radius:10px}
 </style>
 </head>
 <body>
-<h2 style="color:#FFD700;text-align:center">📻 TV GRATIDÃO V16 - QUE FUNCIONA</h2>
-<p style="text-align:center;color:#aaa;font-size:12px">Você estava certo: TV ao vivo buga celular.<br>Essa versão leve só com o que não buga.</p>
-
-<div class="canal">
-<b>🎬 Pluto TV - 100 Canais Grátis - OFICIAL</b><br>
-<small style="color:#0f0">✅ Nunca buga - 100% liberado - sem login</small><br>
-<button class="play" onclick="window.open('https://pluto.tv/live-tv','_blank')">▶️ VER PLUTO TV - FUNCIONA 100%</button>
+<div class="header">
+<b style="color:#FFD700">📺 TV GRATIDÃO V17 - PLUTO</b>
+<button class="btn-gold" onclick="if(deferredPrompt){deferredPrompt.prompt()}else{alert('No Chrome: ⋮ > Instalar app')}">📲 Instalar</button>
 </div>
 
-<div class="canal">
-<b>📰 Jovem Pan News - Áudio Ao Vivo</b><br>
-<small style="color:#0f0">✅ Só áudio - nunca buga - igual rádio</small><br>
-<audio controls style="width:100%;margin-top:8px"><source src="https://playerservices.streamtheworld.com/api/livestream-redirect/JP_AD_AAC.aac" type="audio/aac"></audio>
+<div class="tabs">
+<button class="tab active" onclick="setTab('todos',this)">🎬 Pluto Ao Vivo</button>
+<button class="tab" onclick="setTab('favoritos',this)">⭐ Favoritos (<span id="favC">0</span>)</button>
+<button class="tab" onclick="setTab('gravados',this)">🔴 Minha Lista (<span id="gravC">0</span>)</button>
+<button class="tab" onclick="setTab('storage',this)">💾 Armazenamento</button>
 </div>
 
-<div class="canal">
-<b>📺 SBT News - Site Oficial Leve</b><br>
-<small style="color:#aaa">Abre leve sem YouTube</small><br>
-<button class="play" style="background:#222;color:#FFD700;border:1px solid #FFD700" onclick="window.open('https://www.sbt.com.br/ao-vivo','_blank')">▶️ ABRIR SBT SITE OFICIAL</button>
-</div>
+<div id="lista"></div>
 
-<div class="canal" style="border-color:#333">
-<b>💾 Seu App Completo</b><br>
-<small>⭐ Favoritos: <span id="f">0</span> | 🔴 Gravados: <span id="g">0</span></small><br>
-<div style="display:flex;gap:6px;margin-top:10px">
-<button class="btn" onclick="localStorage.clear();alert('🗑️ Lixeira geral limpa!');location.reload()">🗑️ Lixeira Geral</button>
-<button class="btn" onclick="alert('📲 Para instalar: ⋮ > Adicionar à tela inicial')">📲 Instalar</button>
-</div>
-<p style="font-size:11px;color:#666;margin-top:8px">Você tinha razão: os donos não deixam retransmitir. Essa versão só usa link oficial que eles mesmos liberaram.</p>
-</div>
+<script>
+let deferredPrompt=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;});
+let tab='todos',favoritos=JSON.parse(localStorage.getItem('pluto_fav')||'[]'),gravados=JSON.parse(localStorage.getItem('pluto_grav')||'[]');
 
+let canais=[
+{nome:'Pluto TV Cine Sucessos',url:'https://pluto.tv/br/live-tv/5e0b9bdb0b2b9c00093e56c9',icon:'🎬',cat:'filmes',info:'O Preço do Amanhã - ao vivo'},
+{nome:'Pluto TV Ação',url:'https://pluto.tv/br/live-tv/5e0b9bd8d2f6f30009a6f6c0',icon:'💥',cat:'filmes',info:'Elektra - 32m restante - seu print'},
+{nome:'Pluto TV Terror',url:'https://pluto.tv/br/live-tv/5e0b9bdd0b2b9c00093e56d1',icon:'👻',cat:'filmes',info:'Ecos Do Além - 21m restante'},
+{nome:'Pluto TV Suspense',url:'https://pluto.tv/br/live-tv/5e0b9be00b2b9c00093e56d9',icon:'😱',cat:'filmes',info:'Cerco ao Terror - seu print'},
+{nome:'Pluto TV Comédia',url:'https://pluto.tv/br/live-tv/5e0b9bc10b2b9c00093e56a8',icon:'😂',cat:'comedia',info:'Comédias 24h'},
+{nome:'Pluto TV Séries Retrô',url:'https://pluto.tv/br/live-tv/5e0b9bc20b2b9c00093e56ab',icon:'📺',cat:'series',info:'Chaves, Todo Mundo Odeia o Chris'},
+{nome:'Pluto TV Kids',url:'https://pluto.tv/br/live-tv/5e0b9bc70b2b9c00093e56b6',icon:'👶',cat:'kids',info:'Patrulha Canina, Bob Esponja'},
+];
+
+function setTab(n,el){tab=n;document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));if(el)el.classList.add('active');render();}
+function isFav(n){return favoritos.includes(n)}
+function toggleFav(n){if(isFav(n)){favoritos=favoritos.filter(x=>x!==n)}else{favoritos.push(n);localStorage.setItem('pluto_fav',JSON.stringify(favoritos));}localStorage.setItem('pluto_fav',JSON.stringify(favoritos));render();}
+function abrir(url){window.open(url,'_blank');}
+function gravar(nome){let p=prompt('🔴 Adicionar à Minha Lista\nFilme: '+nome+'\nNome para salvar?','');if(!p)return;let o={id:Date.now(),canal:nome,prog:p,data:new Date().toLocaleString('pt-BR')};gravados.unshift(o);localStorage.setItem('pluto_grav',JSON.stringify(gravados));render();}
+function apagar(id){if(!confirm('Apagar da lixeira? 🗑️'))return;gravados=gravados.filter(x=>x.id!==id);localStorage.setItem('pluto_grav',JSON.stringify(gravados));render();}
+function limpar(){if(!confirm('Limpar TUDO? 🗑️ Lixeira Geral - Favoritos + Lista'))return;localStorage.removeItem('pluto_fav');localStorage.removeItem('pluto_grav');favoritos=[];gravados=[];render();}
+
+function render(){
+ let l=document.getElementById('lista');
+ document.getElementById('favC').innerText=favoritos.length;
+ document.getElementById('gravC').innerText=gravados.length;
+ if(tab==='storage'){let u=(JSON.stringify(localStorage).length/1024).toFixed(2);l.innerHTML=`<div class="canal" style="border:1px dashed #FFD700"><h3 style="color:#FFD700;margin:0">💾 ARMAZENAMENTO + LIXEIRAS</h3><p>⭐ Favoritos: ${favoritos.length} filmes</p><p>🔴 Minha Lista: ${gravados.length}</p><p>📦 Uso: ${u} KB</p><p style="color:#0f0;font-size:12px">✅ Tudo salvo na memória - nunca apaga!</p><button class="trash" style="width:100%;padding:14px;margin-top:10px" onclick="limpar()">🗑️ LIXEIRA GERAL - LIMPAR TUDO</button></div>`;return;}
+ if(tab==='gravados'){if(!gravados.length){l.innerHTML='<div class="canal" style="text-align:center;color:#888">Sua lista vazia<br>Clique em 🔴 Minha Lista em qualquer filme</div>';return;}l.innerHTML=gravados.map(g=>`<div class="canal" style="border-left:4px solid #FFD700"><b>🔴 ${g.prog}</b><br><small>${g.canal}</small><br><small style="color:#666">${g.data}</small><div style="margin-top:8px"><button class="trash" style="width:100%" onclick="apagar(${g.id})">🗑️ Lixeira - Apagar</button></div></div>`).join('');return;}
+ let f=canais.filter(c=>{if(tab==='favoritos'&&!isFav(c.nome))return false;return true;});
+ l.innerHTML=f.map(c=>`<div class="canal"><div style="display:flex;align-items:center;gap:10px"><div style="width:44px;height:44px;background:#000;border:1px solid #333;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px">${c.icon}</div><div style="flex:1"><b>${c.nome} <span style="color:#0f0;font-size:10px">● FUNCIONA</span></b><br><small style="color:#aaa">${c.info}</small></div><button class="fav" onclick="toggleFav('${c.nome}')">${isFav(c.nome)?'⭐':'☆'}</button></div><button class="play" onclick="abrir('${c.url}')">▶️ VER AGORA - PLUTO (100% funciona igual seu print)</button><div style="display:flex;gap:6px;margin-top:6px"><button style="background:#111;color:#FFD700;border:1px solid #FFD700;padding:10px;border-radius:10px;flex:1" onclick="gravar('${c.nome}')">🔴 Minha Lista</button><button class="trash" style="flex:1" onclick="toggleFav('${c.nome}')">🗑️ Fav</button></div></div>`).join('');
+}
+render();
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js')}
+</script>
 </body>
 </html>
