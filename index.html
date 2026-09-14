@@ -2,38 +2,44 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TV GRATIDÃO V10 COMPLETA</title>
+<title>TV GRATIDÃO V11 - SEM TRAVAR</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#000000">
 <style>
-body{background:#000;color:#fff;font-family:Arial;margin:0;padding-bottom:20px}
-.header{position:sticky;top:0;background:#111;border-bottom:3px solid #FFD700;padding:8px;display:flex;gap:6px;align-items:center;z-index:50}
+body{background:#000;color:#fff;font-family:Arial;margin:0;padding-bottom:80px}
+.header{position:sticky;top:0;background:#111;border-bottom:3px solid #FFD700;padding:10px;display:flex;gap:6px;align-items:center;z-index:50}
 .btn-gold{background:#FFD700;color:#000;border:0;padding:11px 14px;border-radius:12px;font-weight:bold}
 .btn2{background:#222;color:#fff;border:1px solid #444;padding:9px 10px;border-radius:10px}
 .btn-icon{width:44px;height:44px;border-radius:10px;background:#222;border:1px solid #444;color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center}
-.tabs{position:sticky;top:56px;background:#000;display:flex;gap:6px;padding:8px 10px;overflow:auto;z-index:40;border-bottom:1px solid #222}
+.tabs{position:sticky;top:58px;background:#000;display:flex;gap:6px;padding:8px 10px;overflow:auto;z-index:40;border-bottom:1px solid #222}
 .tab{padding:10px 14px;border-radius:20px;background:#222;border:1px solid #333;color:#fff;white-space:nowrap}
 .tab.active{background:#FFD700;color:#000;font-weight:bold}
-.canal{background:#151515;border:1px solid #2a2a2a;border-radius:16px;margin:8px 10px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.canal{background:#151515;border:1px solid #2a2a2a;border-radius:16px;margin:8px 10px;padding:12px;display:flex;flex-direction:column;gap:10px}
+.canal:active{transform:scale(0.98);border-color:#FFD700}
 .linha{display:flex;align-items:center;gap:10px}
 .logo{width:48px;height:48px;border-radius:12px;background:#000;display:flex;align-items:center;justify-content:center;font-size:24px;border:1px solid #333}
 .botoes{display:flex;gap:6px;flex-wrap:wrap}
-.play{flex:1;background:#FFD700;color:#000;border:0;padding:11px;border-radius:10px;font-weight:bold;min-width:120px}
-.gravar{background:#222;color:#FFD700;border:1px solid #FFD700;padding:9px 12px;border-radius:10px;font-weight:bold}
-.fav{background:#222;border:1px solid #444;color:#FFD700;padding:9px 12px;border-radius:10px;min-width:46px}
+.play{flex:1;background:#FFD700;color:#000;border:0;padding:12px;border-radius:10px;font-weight:bold;min-width:130px;font-size:14px}
+.gravar{background:#222;color:#FFD700;border:1px solid #FFD700;padding:10px 12px;border-radius:10px;font-weight:bold}
+.fav{background:#222;border:1px solid #444;color:#FFD700;padding:10px 12px;border-radius:10px;min-width:46px}
 .trash{background:#2a0a0a;border:1px solid #700;color:#ff5a5a;padding:9px 12px;border-radius:10px}
 .search{margin:10px;padding:8px;background:#111;border-radius:12px;border:1px solid #333}
 .search input{width:100%;padding:12px;border-radius:10px;background:#000;border:1px solid #333;color:#fff;box-sizing:border-box}
 .card{background:#111;border:1px solid #333;border-radius:12px;padding:12px;margin:10px}
+.infoBox{display:none;background:#1a1a00;border:1px solid #FFD700;border-radius:10px;padding:10px;margin-top:6px;font-size:12px;color:#FFD700}
 .live{color:#00ff00;font-size:10px;font-weight:bold}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#FFD700;color:#000;padding:12px 18px;border-radius:20px;font-weight:bold;z-index:999;display:none;box-shadow:0 4px 20px rgba(0,0,0,0.8)}
 </style>
 </head>
 <body>
+
+<div class="toast" id="toast"></div>
+
 <div class="header">
 <button class="btn-icon" onclick="history.back()">⬅️</button>
-<b style="color:#FFD700;flex:1">📺 TV GRATIDÃO V10 - TODOS ABERTOS</b>
-<button class="btn2" onclick="if(navigator.share){navigator.share({title:'TV Gratidão V10',url:location.href})}else{navigator.clipboard.writeText(location.href);alert('Link copiado!')}">📤</button>
-<button class="btn-gold" id="btnInstalar" onclick="instalar()">📲 Instalar</button>
+<b style="color:#FFD700;flex:1">📺 TV GRATIDÃO V11</b>
+<button class="btn2" onclick="compartilhar()">📤</button>
+<button class="btn-gold" id="btnInstalar">📲 Instalar</button>
 </div>
 
 <div class="tabs">
@@ -44,59 +50,59 @@ body{background:#000;color:#fff;font-family:Arial;margin:0;padding-bottom:20px}
 <button class="tab" onclick="setTab('storage',this)">💾 Armazenamento</button>
 </div>
 
-<div class="search"><input id="busca" placeholder="🔍 Buscar canal... Ex: Globo, SBT, Massa" oninput="render()"></div>
+<div class="search"><input id="busca" placeholder="🔍 Buscar canal..." oninput="render()"></div>
 <div id="lista"></div>
 
 <script>
 let deferredPrompt=null;
-window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;document.getElementById('btnInstalar').style.display='block';});
-function instalar(){if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.then(r=>{deferredPrompt=null;});}else{alert('No Chrome clique em ⋮ > Adicionar à tela inicial > Instalar app\nAí vira app no seu celular!');}}
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;});
+document.getElementById('btnInstalar').onclick=()=>{if(deferredPrompt){deferredPrompt.prompt();}else{alert('No Chrome: ⋮ > Adicionar à tela inicial > Instalar');}}
+
+function showToast(msg){let t=document.getElementById('toast');t.innerText=msg;t.style.display='block';setTimeout(()=>t.style.display='none',2500);}
 
 let tab='todos';
-let favoritos=JSON.parse(localStorage.getItem('tv_fav_v10')||'[]');
-let gravados=JSON.parse(localStorage.getItem('tv_grav_v10')||'[]');
+let favoritos=JSON.parse(localStorage.getItem('tv_fav_v11')||'[]');
+let gravados=JSON.parse(localStorage.getItem('tv_grav_v11')||'[]');
 
 let canais=[
-{nome:'Globo',cat:'nacional',icon:'🌐',info:'TV Aberta - Canal 10.1 - Sat StarOne D2 70W'},
-{nome:'SBT',cat:'nacional',icon:'📺',info:'TV Aberta - Canal 11.1 - Sat StarOne D2 70W'},
-{nome:'Record',cat:'nacional',icon:'📡',info:'TV Aberta - Canal 08.1 - Sat StarOne D2 70W'},
-{nome:'Band',cat:'nacional',icon:'📺',info:'TV Aberta - Canal 07.1 - Sat StarOne D2 70W'},
-{nome:'RedeTV!',cat:'nacional',icon:'📺',info:'TV Aberta - Canal 09.1 - Sat StarOne D2 70W'},
-{nome:'TV Cultura',cat:'nacional',icon:'🎓',info:'TV Aberta - Canal 02.1 - Educação'},
-{nome:'TV Brasil',cat:'nacional',icon:'🇧🇷',info:'TV Aberta - Canal 04.1 - EBC'},
-{nome:'TV Gazeta',cat:'nacional',icon:'📺',info:'TV Aberta - Canal 11.1 SP'},
-{nome:'Rede Vida',cat:'nacional',icon:'📡',info:'TV Aberta - Canal Religioso'},
-{nome:'TV Aparecida',cat:'nacional',icon:'🙏',info:'TV Aberta - Canal Religioso'},
-{nome:'Canção Nova',cat:'nacional',icon:'🙏',info:'TV Aberta - Canal Religioso'},
-{nome:'RIC TV Curitiba',cat:'parana',icon:'📍',info:'Afiliada Record - Canal 07.1 Curitiba'},
-{nome:'RPC Curitiba',cat:'parana',icon:'📍',info:'Afiliada Globo - Canal 12.1 Curitiba'},
-{nome:'Rede Massa SBT',cat:'parana',icon:'📍',info:'Afiliada SBT - Canal 05.1 Curitiba / Maringá / Londrina'},
+{nome:'Globo',cat:'nacional',icon:'🌐',info:'Canal 12.1 - Aberto Digital - HD Grátis'},
+{nome:'SBT',cat:'nacional',icon:'📺',info:'Canal 05.1 - Aberto Digital - HD Grátis'},
+{nome:'Record',cat:'nacional',icon:'📡',info:'Canal 08.1 - Aberto Digital - HD Grátis'},
+{nome:'Band',cat:'nacional',icon:'📺',info:'Canal 07.1 - Aberto Digital - HD Grátis'},
+{nome:'RedeTV!',cat:'nacional',icon:'📺',info:'Canal 09.1 - Aberto Digital - HD Grátis'},
+{nome:'TV Cultura',cat:'nacional',icon:'🎓',info:'Canal 02.1 - Educação - Aberto'},
+{nome:'TV Brasil',cat:'nacional',icon:'🇧🇷',info:'Canal 04.1 - EBC - Aberto'},
+{nome:'TV Gazeta',cat:'nacional',icon:'📺',info:'Canal 11.1 - Aberto'},
+{nome:'Rede Vida',cat:'nacional',icon:'🙏',info:'Canal Religioso - Aberto'},
+{nome:'TV Aparecida',cat:'nacional',icon:'🙏',info:'Canal Religioso - Aberto'},
+{nome:'Canção Nova',cat:'nacional',icon:'🙏',info:'Canal Religioso - Aberto'},
+{nome:'RIC TV Curitiba',cat:'parana',icon:'📍',info:'Record PR - Canal 07.1 Curitiba'},
+{nome:'RPC Curitiba',cat:'parana',icon:'📍',info:'Globo PR - Canal 12.1 Curitiba'},
+{nome:'Rede Massa SBT',cat:'parana',icon:'📍',info:'SBT PR - Canal 05.1 Curitiba'},
 {nome:'Band Paraná',cat:'parana',icon:'📍',info:'Band PR - Canal 10.1 Curitiba'},
-{nome:'CNT',cat:'parana',icon:'📡',info:'Curitiba - Canal 43.1'},
+{nome:'CNT',cat:'parana',icon:'📡',info:'Curitiba - Canal 43.1 - Aberto'},
 {nome:'TV Evangelizar',cat:'parana',icon:'🙏',info:'Curitiba - Canal 27.1 - Padre Manzotti'},
-{nome:'TV Paraná Turismo',cat:'parana',icon:'🏞️',info:'Curitiba - Turismo PR'},
-{nome:'TV Mercosul',cat:'parana',icon:'📺',info:'Regional PR'},
-{nome:'TV Iguaçu',cat:'parana',icon:'📺',info:'Afiliada SBT Interior'},
-{nome:'TV Tarobá',cat:'parana',icon:'📺',info:'Band Interior PR'},
-{nome:'TV Naipi',cat:'parana',icon:'📺',info:'Foz do Iguaçu - SBT'},
+{nome:'TV Paraná Turismo',cat:'parana',icon:'🏞️',info:'Curitiba - Turismo'},
+{nome:'TV Mercosul',cat:'parana',icon:'📺',info:'Regional PR - Aberto'},
 ];
 
 function setTab(n,el){tab=n;document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));if(el)el.classList.add('active');render();}
 function isFav(n){return favoritos.includes(n)}
-function toggleFav(n){if(isFav(n)){favoritos=favoritos.filter(x=>x!==n)}else{favoritos.push(n)}localStorage.setItem('tv_fav_v10',JSON.stringify(favoritos));render();}
+function toggleFav(n){if(isFav(n)){favoritos=favoritos.filter(x=>x!==n);showToast('⭐ Removido dos favoritos');}else{favoritos.push(n);showToast('⭐ Salvo na memória!');}localStorage.setItem('tv_fav_v11',JSON.stringify(favoritos));render();}
+function abrirInfo(id){let el=document.getElementById('info-'+id);if(el)el.style.display=el.style.display==='block'?'none':'block';}
+
 function gravar(nome){
- let prog=prompt(`🔴 GRAVAR PROGRAMAÇÃO\n\nCanal: ${nome}\n\nQual programa você quer salvar para assistir mais tarde?\nEx: Jornal Nacional, Chaves, Novela das 9`,'');
+ let prog=prompt(`🔴 GRAVAR\n\nCanal: ${nome}\n\nNome do programa para assistir mais tarde:`,'');
  if(!prog)return;
- let hora=prompt('Qual horário / dia passou?','Hoje '+new Date().toLocaleTimeString()+' - '+new Date().toLocaleDateString());
+ let hora=prompt('Horário / dia?','Hoje '+new Date().toLocaleTimeString());
  let item={id:Date.now(),canal:nome,programa:prog,horario:hora,data:new Date().toLocaleString('pt-BR')};
  gravados.unshift(item);
- localStorage.setItem('tv_grav_v10',JSON.stringify(gravados));
- alert(`✅ GRAVADO COM SUCESSO!\n\n📺 ${nome}\n🎬 ${prog}\n🕐 ${hora}\n\nFicou salvo em 🔴 Gravados na memória do celular!`);
+ localStorage.setItem('tv_grav_v11',JSON.stringify(gravados));
+ showToast('🔴 Gravado: '+prog);
  render();
 }
-function apagarGravado(id){if(!confirm('Apagar essa gravação da lixeira? 🗑️'))return;gravados=gravados.filter(x=>x.id!==id);localStorage.setItem('tv_grav_v10',JSON.stringify(gravados));render();}
-function apagarFav(nome){if(!confirm('Remover dos favoritos?'))return;favoritos=favoritos.filter(x=>x!==nome);localStorage.setItem('tv_fav_v10',JSON.stringify(favoritos));render();}
-function limparTudo(){if(!confirm('⚠️ APAGAR TUDO?\n\nIsso vai limpar:\n- Todos os favoritos\n- Todas as gravações\n\nTem certeza?'))return;localStorage.removeItem('tv_fav_v10');localStorage.removeItem('tv_grav_v10');favoritos=[];gravados=[];render();alert('🗑️ Tudo limpo!');}
+function apagarGravado(id){if(!confirm('Apagar da lixeira? 🗑️'))return;gravados=gravados.filter(x=>x.id!==id);localStorage.setItem('tv_grav_v11',JSON.stringify(gravados));render();showToast('🗑️ Apagado');}
+function limparTudo(){if(!confirm('Apagar TUDO? Favoritos + Gravados?'))return;localStorage.removeItem('tv_fav_v11');localStorage.removeItem('tv_grav_v11');favoritos=[];gravados=[];render();showToast('🗑️ Tudo limpo');}
 
 function render(){
  let busca=document.getElementById('busca').value.toLowerCase();
@@ -108,51 +114,49 @@ function render(){
   let uso=(JSON.stringify(localStorage).length/1024).toFixed(2);
   lista.innerHTML=`
    <div class="card" style="border:1px dashed #FFD700">
-    <h3 style="color:#FFD700;margin:0 0 10px 0">💾 ARMAZENAMENTO - MEMÓRIA DO CELULAR</h3>
-    <p>⭐ Favoritos salvos: <b>${favoritos.length}</b></p>
-    <p>🔴 Programas gravados: <b>${gravados.length}</b></p>
-    <p>📦 Espaço usado: <b>${uso} KB</b> de 5000 KB</p>
-    <p style="color:#0f0;font-size:12px">✅ Tudo fica salvo mesmo se fechar o app ou desligar o celular!</p>
+    <h3 style="color:#FFD700;margin:0 0 10px 0">💾 ARMAZENAMENTO</h3>
+    <p>⭐ Favoritos: <b>${favoritos.length}</b> canais salvos</p>
+    <p>🔴 Gravados: <b>${gravados.length}</b> programas</p>
+    <p>📦 Uso: <b>${uso} KB</b></p>
+    <p style="color:#0f0;font-size:12px">✅ Salvo na memória do celular, não apaga!</p>
     <div style="display:flex;gap:8px;margin-top:12px">
      <button class="btn2" style="flex:1" onclick="render()">🔄 Atualizar</button>
-     <button class="trash" style="flex:1" onclick="limparTudo()">🗑️ LIXEIRA GERAL - LIMPAR TUDO</button>
+     <button class="trash" style="flex:1" onclick="limparTudo()">🗑️ LIXEIRA GERAL</button>
     </div>
-   </div>
-   ${favoritos.length?`<div class="card"><b>⭐ Seus Favoritos na memória:</b><br><small>${favoritos.join(', ')}</small></div>`:''}
-   ${gravados.length?`<div class="card"><b>🔴 Seus Gravados na memória:</b><br><small>${gravados.length} programas salvos</small></div>`:''}
-  `;return;
+   </div>`;return;
  }
 
  if(tab==='gravados'){
-  if(gravados.length===0){lista.innerHTML='<div class="card" style="text-align:center;color:#888">Nenhuma gravação ainda.<br><br>Clique no botão <b>🔴 GRAVAR</b> de qualquer canal<br>para salvar o nome do programa e assistir depois</div>';return;}
+  if(gravados.length===0){lista.innerHTML='<div class="card" style="text-align:center;color:#888">Nenhuma gravação.<br>Clique em 🔴 GRAVAR em qualquer canal</div>';return;}
   lista.innerHTML=gravados.map(g=>`
-   <div class="canal" style="border-left:4px solid #ff0000">
-    <div class="linha"><div class="logo">🔴</div><div style="flex:1"><b>${g.programa}</b><br><small style="color:#aaa">${g.canal} - ${g.horario}</small><br><small style="color:#666">${g.data}</small></div></div>
-    <div class="botoes"><button class="play" onclick="alert('📺 Para assistir: Ligue sua TV aberta no canal ${g.canal} ou busque o replay no Globoplay / SBT+ / RecordPlus.\\n\\nSeu programa salvo: ${g.programa} - ${g.horario}')">▶️ VER COMO ASSISTIR</button><button class="trash" onclick="apagarGravado(${g.id})">🗑️ Lixeira</button></div>
+   <div class="canal" style="border-left:4px solid #f00">
+    <div class="linha"><div class="logo">🔴</div><div style="flex:1"><b>${g.programa}</b><br><small>${g.canal} - ${g.horario}</small><br><small style="color:#666">${g.data}</small></div></div>
+    <div class="botoes"><button class="play" onclick="showToast('📺 ${g.programa} - ${g.canal} - ${g.horario}')">▶️ ${g.canal} - ${g.programa}</button><button class="trash" onclick="apagarGravado(${g.id})">🗑️ Lixeira</button></div>
    </div>`).join('');return;
  }
 
  let filtrados=canais.filter(c=>{
   if(tab==='favoritos'&&!isFav(c.nome))return false;
   if(tab==='parana'&&c.cat!=='parana')return false;
-  if(tab==='todos'&&!c.nome.toLowerCase().includes(busca)&&!c.info.toLowerCase().includes(busca))return false;
-  if(tab!=='todos'&&tab!=='storage'&&tab!=='gravados'&&tab!=='favoritos'&&tab!=='parana'){return c.nome.toLowerCase().includes(busca)}
-  if(busca) return c.nome.toLowerCase().includes(busca)||c.info.toLowerCase().includes(busca);
+  if(busca&&!c.nome.toLowerCase().includes(busca)&&!c.info.toLowerCase().includes(busca))return false;
   return true;
  });
 
- if(tab==='favoritos'&&filtrados.length===0){lista.innerHTML='<div class="card" style="text-align:center;color:#888">Nenhum favorito ainda.<br>Clique em ☆ para salvar na memória</div>';return;}
+ if(tab==='favoritos'&&filtrados.length===0){lista.innerHTML='<div class="card" style="text-align:center;color:#888">Nenhum favorito<br>Clique em ☆ para salvar</div>';return;}
 
- lista.innerHTML=filtrados.map(c=>`
+ lista.innerHTML=filtrados.map((c,i)=>`
   <div class="canal">
-   <div class="linha"><div class="logo">${c.icon}</div><div style="flex:1"><b>${c.nome} <span class="live">● ABERTO</span></b><br><small style="color:#aaa">${c.info}</small></div><button class="fav" onclick="toggleFav('${c.nome}')">${isFav(c.nome)?'⭐':'☆'}</button></div>
+   <div class="linha" onclick="abrirInfo(${i})"><div class="logo">${c.icon}</div><div style="flex:1"><b>${c.nome} <span class="live">● ABERTO</span></b><br><small style="color:#aaa">${c.info}</small><br><small style="color:#FFD700;font-size:10px">Toque para detalhes ▼</small></div><button class="fav" onclick="event.stopPropagation();toggleFav('${c.nome}')">${isFav(c.nome)?'⭐':'☆'}</button></div>
+   <div id="info-${i}" class="infoBox">📺 <b>${c.nome}</b><br>${c.info}<br><br>✅ Canal aberto grátis via antena digital ou parabólica digital SAT HD Regional.<br>Sem mensalidade - 100% legal.</div>
    <div class="botoes">
-    <button class="play" onclick="alert('📺 ${c.nome}\\n${c.info}\\n\\nPara assistir: Use sua antena digital ou parabólica digital SAT HD Regional StarOne D2 70W.\\nTodos os canais abertos são 100% grátis sem mensalidade!')">📺 ${c.nome} - AO VIVO ABERTO</button>
+    <button class="play" onclick="abrirInfo(${i})">📺 VER ${c.nome} - ABERTO</button>
     <button class="gravar" onclick="gravar('${c.nome}')">🔴 GRAVAR</button>
-    ${isFav(c.nome)?`<button class="trash" onclick="apagarFav('${c.nome}')">🗑️</button>`:''}
+    ${isFav(c.nome)?`<button class="trash" onclick="toggleFav('${c.nome}')">🗑️</button>`:''}
    </div>
   </div>`).join('');
 }
+
+function compartilhar(){let u=location.href;if(navigator.share){navigator.share({title:'TV Gratidão V11',url:u})}else{navigator.clipboard.writeText(u);showToast('Link copiado!');}}
 
 render();
 if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js')}
