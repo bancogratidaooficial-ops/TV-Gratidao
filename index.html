@@ -2,88 +2,69 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TV GRATIDÃO V14 DEFINITIVA</title>
+<title>TV GRATIDÃO V15 - CONTROLE REMOTO</title>
 <link rel="manifest" href="manifest.json">
 <style>
-body{background:#000;color:#fff;font-family:Arial;margin:0;padding-bottom:20px}
+body{background:#000;color:#fff;font-family:Arial;margin:0}
 .header{position:sticky;top:0;background:#111;border-bottom:3px solid #FFD700;padding:10px;display:flex;gap:6px;align-items:center;z-index:99}
 .btn-gold{background:#FFD700;color:#000;border:0;padding:11px 14px;border-radius:12px;font-weight:bold}
 .btn2{background:#222;color:#fff;border:1px solid #444;padding:9px 10px;border-radius:10px}
-.tabs{display:flex;gap:6px;padding:8px;overflow:auto;position:sticky;top:56px;background:#000;border-bottom:1px solid #222;z-index:70}
+.tabs{display:flex;gap:6px;padding:8px;overflow:auto;background:#000;border-bottom:1px solid #222;position:sticky;top:56px;z-index:80}
 .tab{padding:10px 14px;border-radius:20px;background:#222;border:1px solid #333;color:#fff;white-space:nowrap}
 .tab.active{background:#FFD700;color:#000;font-weight:bold}
-.canal{background:#151515;border:1px solid #2a2a2a;border-radius:16px;margin:8px 10px;padding:12px;display:flex;flex-direction:column;gap:8px}
-.canal.ok{border-color:#00ff00}
-.botoes{display:flex;gap:6px;flex-wrap:wrap}
-.play{flex:1;background:#FFD700;color:#000;border:0;padding:13px;border-radius:10px;font-weight:bold;font-size:14px;min-width:160px}
-.gravar{background:#222;color:#FFD700;border:1px solid #FFD700;padding:10px 12px;border-radius:10px}
-.fav{background:#222;border:1px solid #444;color:#FFD700;padding:10px 12px;border-radius:10px;min-width:46px}
-.trash{background:#2a0a0a;border:1px solid #700;color:#ff5a5a;padding:9px 12px;border-radius:10px}
+.canal{background:#151515;border:1px solid #2a2a2a;border-radius:16px;margin:8px 10px;padding:12px}
+.play{width:100%;background:#FFD700;color:#000;border:0;padding:14px;border-radius:12px;font-weight:bold;font-size:15px;margin-top:8px}
+.gravar{background:#111;color:#FFD700;border:1px solid #FFD700;padding:10px;border-radius:10px;width:48%}
+.trash{background:#2a0a0a;border:1px solid #700;color:#ff5a5a;padding:10px;border-radius:10px;width:48%}
 .search{margin:10px;padding:8px;background:#111;border-radius:12px;border:1px solid #333}
 .search input{width:100%;padding:12px;border-radius:10px;background:#000;border:1px solid #333;color:#fff;box-sizing:border-box}
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#00ff00;color:#000;padding:12px 20px;border-radius:20px;font-weight:bold;z-index:999;display:none}
 </style>
 </head>
 <body>
-<div class="toast" id="toast"></div>
 <div class="header">
-<b style="color:#FFD700;flex:1">📺 TV GRATIDÃO V14 - DEFINITIVA</b>
-<button class="btn2" onclick="compartilhar()">📤</button>
-<button class="btn-gold" id="btnInst">📲 Instalar</button>
+<b style="color:#FFD700;flex:1">📺 TV GRATIDÃO V15 - OFICIAL</b>
+<button class="btn-gold" onclick="if(deferred){deferred.prompt()}else{alert('⋮ > Instalar app')}">📲 Instalar</button>
 </div>
-
 <div class="tabs">
-<button class="tab active" onclick="setTab('todos',this)">📺 Todos Abertos</button>
+<button class="tab active" onclick="setTab('todos',this)">📺 Todos (Oficial)</button>
 <button class="tab" onclick="setTab('favoritos',this)">⭐ Fav (<span id="favC">0</span>)</button>
 <button class="tab" onclick="setTab('gravados',this)">🔴 Gravados (<span id="gravC">0</span>)</button>
 <button class="tab" onclick="setTab('storage',this)">💾 Armazenamento</button>
 </div>
-<div class="search"><input id="busca" placeholder="🔍 Buscar..." oninput="render()"></div>
+<div class="search"><input id="busca" placeholder="Buscar canal..." oninput="render()"></div>
 <div id="lista"></div>
 
 <script>
-let deferred=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;});
-document.getElementById('btnInst').onclick=()=>{if(deferred){deferred.prompt()}else{alert('No Chrome: ⋮ > Adicionar à tela inicial');}}
-function toast(m){let t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
-let tab='todos';
-let favoritos=JSON.parse(localStorage.getItem('tv_fav_v14')||'[]');
-let gravados=JSON.parse(localStorage.getItem('tv_grav_v14')||'[]');
-
-// LINKS /live OFICIAIS - NUNCA EXPIRAM - IGUAL SEUS PRINTS QUE FUNCIONARAM
+let deferred=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;});
+let tab='todos',favoritos=JSON.parse(localStorage.getItem('fv15')||'[]'),gravados=JSON.parse(localStorage.getItem('gv15')||'[]');
 let canais=[
-{nome:'SBT News Ao Vivo 24h',url:'https://www.youtube.com/@sbtnews/live',icon:'📺',info:'SBT News - Oficial - 24h - Nunca expira',cat:'aberto'},
-{nome:'Record News Ao Vivo 24h',url:'https://www.youtube.com/@recordnews/live',icon:'📡',info:'Record News - Oficial - 24h - Nunca expira',cat:'aberto'},
-{nome:'Band Jornalismo Ao Vivo',url:'https://www.youtube.com/@BandJornalismo/live',icon:'📺',info:'Band - Oficial - Ao vivo - Nunca expira',cat:'aberto'},
-{nome:'Jovem Pan News Ao Vivo',url:'https://www.youtube.com/@JovemPanNews/live',icon:'📰',info:'Jovem Pan - 24h - Funciona (seu print)',cat:'aberto'},
-{nome:'CNN Brasil Ao Vivo',url:'https://www.youtube.com/@cnnbrasil/live',icon:'📰',info:'CNN Brasil - Funciona (seu print)',cat:'aberto'},
-{nome:'TV Cultura Ao Vivo',url:'https://www.youtube.com/@tvcultura/live',icon:'🎓',info:'TV Cultura - Oficial',cat:'aberto'},
-{nome:'Rede Massa SBT PR',url:'https://www.youtube.com/@RedeMassaOficial/live',icon:'📍',info:'SBT Paraná - Afiliada',cat:'parana'},
-{nome:'RIC TV Record PR',url:'https://www.youtube.com/@rictv/live',icon:'📍',info:'Record PR - Curitiba',cat:'parana'},
-{nome:'Pluto TV 100 canais grátis',url:'https://pluto.tv/live-tv',icon:'🎬',info:'100 canais grátis - sem cadastro - legal',cat:'aberto'},
+{nome:'SBT News 24h',link:'https://www.youtube.com/@sbtnews/live',icon:'📺',desc:'Oficial SBT News - abre no YouTube'},
+{nome:'Jovem Pan News',link:'https://www.youtube.com/@JovemPanNews/live',icon:'📰',desc:'Oficial - 24h (seu print funcionou)'},
+{nome:'CNN Brasil',link:'https://www.youtube.com/@cnnbrasil/live',icon:'📰',desc:'Oficial CNN (seu print funcionou)'},
+{nome:'Record News',link:'https://www.youtube.com/@recordnews/live',icon:'📡',desc:'Oficial Record News - 24h'},
+{nome:'Band Jornalismo',link:'https://www.youtube.com/@BandJornalismo/live',icon:'📺',desc:'Oficial Band'},
+{nome:'TV Evangelizar',link:'https://www.youtube.com/@tvevangelizaroficial/live',icon:'🙏',desc:'Oficial - Padre Manzotti - Curitiba (corrigi seu link quebrado)'},
+{nome:'Pluto TV - 100 canais grátis',link:'https://pluto.tv/live-tv',icon:'🎬',desc:'Legal e grátis - sem login'},
+{nome:'Globoplay (1h grátis)',link:'https://globoplay.globo.com/ao-vivo/',icon:'🌐',desc:'Site oficial Globo'},
 ];
 
 function setTab(n,el){tab=n;document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));if(el)el.classList.add('active');render();}
 function isFav(n){return favoritos.includes(n)}
-function toggleFav(n){if(isFav(n)){favoritos=favoritos.filter(x=>x!==n);toast('⭐ Removido');}else{favoritos.push(n);toast('⭐ Salvo na memória!');}localStorage.setItem('tv_fav_v14',JSON.stringify(favoritos));render();}
-function play(url){window.open(url,'_blank');toast('Abrindo no YouTube - 100% funciona!');}
-function gravar(nome){let p=prompt(`🔴 GRAVAR\nCanal: ${nome}\nNome do programa:`,'');if(!p)return;let h=prompt('Horário?','Hoje '+new Date().toLocaleString('pt-BR'));let i={id:Date.now(),canal:nome,programa:p,horario:h,data:new Date().toLocaleString('pt-BR')};gravados.unshift(i);localStorage.setItem('tv_grav_v14',JSON.stringify(gravados));toast('🔴 Gravado: '+p);render();}
-function apagar(id){if(!confirm('Apagar da lixeira? 🗑️'))return;gravados=gravados.filter(x=>x.id!==id);localStorage.setItem('tv_grav_v14',JSON.stringify(gravados));render();toast('🗑️ Apagado');}
-function limpar(){if(!confirm('Limpar TUDO? Favoritos + Gravados? 🗑️'))return;localStorage.removeItem('tv_fav_v14');localStorage.removeItem('tv_grav_v14');favoritos=[];gravados=[];render();toast('🗑️ Tudo limpo');}
-function compartilhar(){let u=location.href;if(navigator.share){navigator.share({title:'TV Gratidão V14',url:u})}else{navigator.clipboard.writeText(u);toast('Link copiado!');}}
+function toggleFav(n){if(isFav(n)){favoritos=favoritos.filter(x=>x!==n)}else{favoritos.push(n)}localStorage.setItem('fv15',JSON.stringify(favoritos));render();}
+function abrir(u){window.open(u,'_blank');}
+function gravar(n){let p=prompt('🔴 GRAVAR - '+n+'\nNome do programa:','');if(!p)return;let o={id:Date.now(),canal:n,prog:p,data:new Date().toLocaleString('pt-BR')};gravados.unshift(o);localStorage.setItem('gv15',JSON.stringify(gravados));render();}
+function apagar(id){if(!confirm('Apagar? 🗑️'))return;gravados=gravados.filter(x=>x.id!==id);localStorage.setItem('gv15',JSON.stringify(gravados));render();}
+function limpar(){if(!confirm('Limpar TUDO? 🗑️ Lixeira geral'))return;localStorage.removeItem('fv15');localStorage.removeItem('gv15');favoritos=[];gravados=[];render();}
 
 function render(){
  let b=document.getElementById('busca').value.toLowerCase();
- let lista=document.getElementById('lista');
+ let l=document.getElementById('lista');
  document.getElementById('favC').innerText=favoritos.length;
  document.getElementById('gravC').innerText=gravados.length;
- if(tab==='storage'){let uso=(JSON.stringify(localStorage).length/1024).toFixed(2);lista.innerHTML=`<div style="background:#111;border:1px dashed #FFD700;border-radius:12px;padding:12px;margin:10px"><h3 style="color:#FFD700;margin:0">💾 ARMAZENAMENTO + LIXEIRAS</h3><p>⭐ Favoritos salvos: ${favoritos.length}</p><p>🔴 Gravados: ${gravados.length}</p><p>📦 Uso: ${uso} KB / 5000 KB</p><p style="color:#0f0;font-size:12px">✅ Salvo na memória do celular!</p><div style="display:flex;gap:8px;margin-top:10px"><button class="btn2" style="flex:1" onclick="render()">🔄 Atualizar</button><button class="trash" style="flex:1" onclick="limpar()">🗑️ LIXEIRA GERAL - LIMPAR TUDO</button></div></div>`;return;}
- if(tab==='gravados'){if(gravados.length===0){lista.innerHTML='<div style="background:#111;border-radius:12px;padding:20px;margin:10px;text-align:center;color:#888">Nenhuma gravação<br>Clique em 🔴 GRAVAR</div>';return;}lista.innerHTML=gravados.map(g=>`<div class="canal" style="border-left:4px solid red"><b>🔴 ${g.programa}</b><br><small>${g.canal} - ${g.horario}</small><br><small style="color:#666">${g.data}</small><div style="margin-top:8px"><button class="trash" onclick="apagar(${g.id})">🗑️ Lixeira - Apagar este</button></div></div>`).join('');return;}
+ if(tab==='storage'){let u=(JSON.stringify(localStorage).length/1024).toFixed(2);l.innerHTML=`<div class="canal" style="border:1px dashed #FFD700"><h3 style="color:#FFD700;margin:0">💾 Armazenamento</h3><p>⭐ Favoritos: ${favoritos.length}</p><p>🔴 Gravados: ${gravados.length}</p><p>Uso: ${u} KB</p><button class="trash" style="width:100%" onclick="limpar()">🗑️ LIXEIRA GERAL - LIMPAR TUDO</button></div>`;return;}
+ if(tab==='gravados'){if(!gravados.length){l.innerHTML='<div class="canal" style="text-align:center;color:#888">Nenhum gravado</div>';return;}l.innerHTML=gravados.map(g=>`<div class="canal" style="border-left:4px solid red"><b>🔴 ${g.prog}</b><br><small>${g.canal} - ${g.data}</small><br><button class="trash" style="margin-top:8px;width:100%" onclick="apagar(${g.id})">🗑️ Lixeira - Apagar</button></div>`).join('');return;}
  let f=canais.filter(c=>{if(tab==='favoritos'&&!isFav(c.nome))return false;if(b&&!c.nome.toLowerCase().includes(b))return false;return true;});
- lista.innerHTML=f.map(c=>`
-  <div class="canal ok">
-   <div style="display:flex;align-items:center;gap:10px"><div style="width:46px;height:46px;background:#000;border:1px solid #333;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px">${c.icon}</div><div style="flex:1"><b>${c.nome} <span style="color:#0f0;font-size:10px">● AO VIVO</span></b><br><small style="color:#aaa">${c.info}</small></div><button class="fav" onclick="toggleFav('${c.nome}')">${isFav(c.nome)?'⭐':'☆'}</button></div>
-   <div class="botoes"><button class="play" onclick="play('${c.url}')">▶️ VER AGORA - ABRE NO YOUTUBE (nunca expira)</button><button class="gravar" onclick="gravar('${c.nome}')">🔴 GRAVAR</button>${isFav(c.nome)?`<button class="trash" onclick="toggleFav('${c.nome}')">🗑️</button>`:''}</div>
-  </div>`).join('');
+ l.innerHTML=f.map(c=>`<div class="canal"><div style="display:flex;align-items:center;gap:10px"><div style="width:44px;height:44px;background:#000;border:1px solid #333;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px">${c.icon}</div><div style="flex:1"><b>${c.nome} <span style="color:#0f0;font-size:10px">● OFICIAL</span></b><br><small style="color:#aaa">${c.desc}</small></div><button style="background:#222;border:1px solid #444;color:#FFD700;padding:8px 12px;border-radius:10px" onclick="toggleFav('${c.nome}')">${isFav(c.nome)?'⭐':'☆'}</button></div><button class="play" onclick="abrir('${c.link}')">▶️ VER AGORA - ABRE NO APP OFICIAL (100% funciona)</button><div style="display:flex;gap:6px;margin-top:6px"><button class="gravar" onclick="gravar('${c.nome}')">🔴 GRAVAR</button><button class="trash" onclick="toggleFav('${c.nome}')">🗑️ Favorito</button></div></div>`).join('');
 }
 render();
 if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js')}
